@@ -49,28 +49,33 @@ class Configuration:
             self.static_library_ext = ".a"
             self.dynamic_library_ext = ".so"
 
-        cflags = ["-g", "-std=gnu99"]
+        cflags = ["-g", "-std=gnu99", "-fPIC"]
         if options.use_psimd or self.host == "pnacl-nacl-newlib":
             cflags += ["-DNNP_ARCH_PSIMD"]
-        cxxflags = ["-g", "-std=gnu++0x"]
-        ldflags = ["-g"]
+        cxxflags = ["-g", "-std=gnu++0x", "-fPIC"]
+        ldflags = ["-g", "-fPIC"]
         ldlibs = ["m"]
         if self.host in ["x86_64-linux-gnu", "x86_64-nacl-glibc", "x86_64-nacl-newlib", "pnacl-nacl-newlib"]:
             cflags.append("-pthread")
             cxxflags.append("-pthread")
             ldflags.append("-pthread")
 
+        #print("DEBUG: host: {}".format(self.host))
         if self.host == "x86_64-linux-gnu":
             self.writer.variable("imageformat", "elf")
             self.writer.variable("abi", "sysv")
             self.writer.variable("ar", "ar")
             if options.use_psimd:
-                self.writer.variable("cc", "clang")
-                self.writer.variable("cxx", "clang++")
+                #self.writer.variable("cc", "clang")
+                #self.writer.variable("cxx", "clang++")
+                self.writer.variable("cc", "clang-3.8")
+                self.writer.variable("cxx", "clang++-3.8")
             else:
-                self.writer.variable("cc", "gcc")
-                self.writer.variable("cxx", "g++")
-            ldflags.append("-fuse-ld=gold")
+                #self.writer.variable("cc", "gcc")
+                #self.writer.variable("cxx", "g++")
+                self.writer.variable("cc", "gcc-4.9")
+                self.writer.variable("cxx", "g++-4.9")
+            #ldflags.append("-fuse-ld=gold")
             ldlibs.append("rt")
         elif self.host == "x86_64-windows-msvc":
             import _winreg
