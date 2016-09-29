@@ -8,10 +8,16 @@ NNPACK is not intended to be directly used by machine learning researchers; inst
 
 ## Requirements
 
-- Linux or OS X system
-  - Additionally, NNPACK supports cross-compilation for Native Client to run inside Chrome browser
+### Host system
+- Linux or OS X host system
 - x86-64 processor with AVX2 instruction set
   - NNPACK is optimized for Intel Skylake, but can run on Haswell & Broadwell processors too
+  - SSE2 instruction set can be targeted using `--enable-psimd` configuration option, but for performance reasons it is not recommended for production use
+
+### Cross-compilation options:
+- Native Client (x86-64) to run as a packaged Google Chrome App
+- Portable Native Client to run inside Google Chrome (no packaging required)
+- Android with x86/x86-64 (SSE2), ARMv7 with NEON, or ARM64 architecture
 
 ## Features
 
@@ -101,6 +107,18 @@ You can optionally add `--enable-shared` argument for `configure.py` to addition
 - Set `NACL_SDK_ROOT` variable to a versioned SDK directory (e.g. `~/nacl_sdk/pepper_49`).
 - Configure NNPACK with `--host=x86_64-nacl-glibc` or `--host=x86_64-nacl-newlib` (recommended) option.
 
+### Cross-compilation for Portable Native Client
+
+- Download and setup Native Client SDK
+- Set `NACL_SDK_ROOT` variable to a versioned SDK directory (e.g. `~/nacl_sdk/pepper_49`).
+- Configure NNPACK with `--host=pnacl-nacl-newlib` option.
+
+### Cross-compilation for Android
+
+- Download and setup Android NDK
+- Add `ndk-build` to `PATH` variable
+- Navigate to NNPACK directory and build NNPACK with `ndk-build` build system. **Note: an NDK project must be built with Clang toolchain to use NNPACK as a static libray**.
+
 ## Testing
 
 NNPACK contains extensive test suite for transformation and neural network layers.
@@ -113,12 +131,18 @@ Binary packages need to distribute two files: `include/nnpack.h` and `lib/libnnp
 
 ## Bindings
 
-- [szagoruyko/nnpack.torch](https://github.com/szagoruyko/nnpack.torch) - integration of NNPACK into Torch via ffi
+### Deep Learning Frameworks
+- [Caffe2](https://github.com/caffe2/caffe2) natively supports NNPACK
 - `nnpack-pr` branch in [ajtulloch/caffe](https://github.com/ajtulloch/caffe/tree/nnpack-pr) - new integration of NNPACK (convolutional, fully-connected, and max-pooling layers) into Caffe.
 - [Maratyszcza/caffe-nnpack](https://github.com/Maratyszcza/caffe-nnpack) - older and unmaintained integration of NNPACK (convolutional layers only) into Caffe.
-- [tiny-cnn](https://github.com/nyanp/tiny-cnn) - header-only deep learning framework in C++11, which natively supports NNPACK in `feat/generic-computational-graph` branch. See [PR #198](https://github.com/nyanp/tiny-cnn/pull/198).
+- [szagoruyko/nnpack.torch](https://github.com/szagoruyko/nnpack.torch) - integration of NNPACK into Torch via ffi
+- [tiny-dnn](https://github.com/tiny-dnn/tiny-dnn) - header-only deep learning framework in C++11, which natively supports NNPACK.
 - [MXNet](https://github.com/dmlc/mxnet) - integration of NNPACK is being discussed in [Issue #2986](https://github.com/dmlc/mxnet/issues/2986)
 - See also discussion in [Issue #1](https://github.com/Maratyszcza/NNPACK/issues/1)
+
+### Languages and Environments
+- [node-nnpack](https://www.npmjs.com/package/node-nnpack) - Node.js bindings
+- [peterhj/libnnpack](https://github.com/peterhj/libnnpack) - Rust bindings
 
 ## Acknowledgements
 
